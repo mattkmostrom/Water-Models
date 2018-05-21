@@ -1,0 +1,52 @@
+# some global params
+units real
+boundary p p p #all periodic
+atom_style full #bonds, bends, torsions, etc
+timestep 1.000000 # femtoseconds (1e-15 s)
+
+# the atoms file
+#read_restart water_pair.restart
+read_data water_pair.xyz
+#replicate 10 10 10
+
+# methods for potential/force calculations
+kspace_style ewald/disp 1.0e-6
+pair_style lj/cut/coul/long 10
+
+#pair_characterization eps sigma cut_1 cut_2
+pair_coeff 2 2 0 3.428 10 #H-H sigma = r_min-i+r_min-j 
+pair_coeff 1 2 0 3.3 10 #O-H Mixing rules were RMS 
+pair_coeff 1 1 0.15535 3.166 9.4 #O-O http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.460.309&rep=rep1&type=pdf 
+#bond_coeff N args
+bond_style harmonic
+bond_coeff 1 0 1.0
+#angle_coeff N args
+angle_style harmonic
+angle_coeff 1 0 109.47
+
+fix holditbond1 all restrain bond 1 2 1000 1000 1
+fix holditbond2 all restrain bond 1 3 1000 1000 1
+fix holditbond3 all restrain bond 4 5 1000 1000 1
+fix holditbond4 all restrain bond 4 6 1000 1000 1
+
+#fix ID group-ID restrain angle atom1 atom2 atom3 Kstart Kstop theta
+fix holditangle1 all restrain angle 2 1 3 1000 1000 109.47
+fix holditangle2 all restrain angle 5 4 6 1000 1000 109.47
+
+dump Dump all xyz 1 lammps_traj.xyz
+dump_modify Dump sort id
+dump_modify Dump element O H
+dump_modify Dump pbc yes
+
+dump Dumplammps all atom 100 dump.lammps
+
+restart 10 water_pair.1.restart water_pair.restart
+
+thermo_style one #print to terminal
+thermo 10
+
+#velocity all create 100 12345 rot yes mom yes dist gaussian
+fix 2 all nvt temp 298 298 1000 #iso 10 10 1000 random_number atoms_assigned ensemble thermostat start_temp end_temp gradient_step
+#fix 3 all rigid/nvt molecule temp 293 293 100
+
+run 20000

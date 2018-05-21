@@ -1,0 +1,18 @@
+https://pubs.acs.org/doi/pdf/10.1021/j100169a031
+
+Polarizability = 1.271 A^3
+
+q_o = -0.65
+q_H = 0.325
+
+r_OH = 0.9572 A
+
+eps_o = 
+sigma_o = 
+
+eps_H = 0
+sigma_H = 0
+
+L-J parameters don't seem to be explicitly listed, so I will use parameters from
+SPCF
+

@@ -1,0 +1,33 @@
+variable freq equal 1
+
+# some global params
+units real
+boundary p p p #all periodic
+atom_style full #bonds, bends, torsions, etc
+timestep 2.000000 # femtoseconds (1e-15 s)
+
+# the atoms file
+read_data packed_water_start.data
+
+# methods for potential/force calculations
+kspace_style ewald/disp 1.0e-6
+pair_style lj/cut/coul/long/soft 2 1.5 10 10 #soft = ECP?
+
+pair_coeff 1 1 0 1 0 0 #pair_characterization sigma eps cut_1 cut_2
+pair_coeff 1 2 0 1 0 0 #O-H
+pair_coeff 2 2 .15210325 3.15061 0 7.876525 #O-O
+
+variable lambda_ramp equal ramp(0.1,1.0) #make initial configs not explode
+fix 2 all adapt 2 pair lj/cut/coul/long/soft lambda 2 2 v_lambda_ramp
+
+thermo_style custom step etotal density cpuremain spcpu
+thermo ${freq}
+
+dump Dump all xyz ${freq} lammps_traj.xyz
+dump_modify Dump sort id
+dump_modify Dump element  H O
+
+velocity all create 100 12345 rot yes mom yes dist gaussian
+fix 3 all rigid/nvt molecule temp 293 293 100
+
+run 22222

@@ -1,0 +1,47 @@
+# some global params
+units real
+boundary p p p #all periodic
+atom_style full #bonds, bends, torsions, etc
+timestep 2.000000 # femtoseconds (1e-15 s)
+
+# the atoms file
+read_restart water_pair.restart
+#read_data water_pair.xyz
+#replicate 5 5 5
+
+# methods for potential/force calculations
+kspace_style ewald/disp 1.0e-6
+pair_style lj/cut/coul/long 10
+
+#pair_characterization eps sigma cut_1 cut_2
+#pair_coeff 2 2 0.0498 1.6 4.8 #H-H eps = 2*r_min 
+#pair_coeff 1 2 0.089 2.4 7.2 #O-H Mixing rules were geo mean 
+#pair_coeff 1 1 0.1591 3.2 9.6 #O-O 
+
+pair_coeff 2 2 0.046 0.4 1.2 #H-H eps = 2*r_min 
+pair_coeff 1 2 0.083645 1.775285 5.32 #O-H Mixing rules were RMS 
+pair_coeff 1 1 0.1521 3.15057 9.45 #O-O
+
+bond_style harmonic
+bond_coeff 1 669.13 1.0
+bond_coeff 2 164.00 1.633
+
+#velocity all create 298 3
+
+dump Dump all xyz 10 lammps_traj.xyz
+dump_modify Dump sort id
+dump_modify Dump element  O H
+dump_modify Dump pbc yes
+
+dump Dumplammps all atom 100 dump.lammps
+
+restart 100 water_pair.1.restart water_pair.restart
+
+thermo_style one #print to terminal
+thermo 10
+
+#velocity all create 100 12345 rot yes mom yes dist gaussian
+fix 2 all npt temp 298 298 1000 iso 10 10 1000 pchain 3 tchain 3 #random_number atoms_assigned ensemble thermostat start_temp end_temp gradient_step
+#fix 3 all rigid/nvt molecule temp 293 293 100
+
+run 20000

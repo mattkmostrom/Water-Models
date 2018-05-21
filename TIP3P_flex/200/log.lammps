@@ -1,0 +1,124 @@
+LAMMPS (11 Aug 2017)
+OMP_NUM_THREADS environment is not set. Defaulting to 1 thread. (../comm.cpp:90)
+  using 1 OpenMP thread(s) per MPI task
+fix atomify all atomify
+# some global params
+units real
+boundary p p p #all periodic
+atom_style full #bonds, bends, torsions, etc
+timestep 1.000000 # femtoseconds (1e-15 s)
+
+# the atoms file
+read_restart water_pair.restart
+  orthogonal box = (-23.8642 -23.8642 -23.8642) to (63.8642 63.8642 63.8642)
+  1 by 1 by 1 MPI processor grid
+  750 atoms
+  750 bonds
+  2 = max # of 1-2 neighbors
+  2 = max # of 1-3 neighbors
+  4 = max # of 1-4 neighbors
+  2 = max # of special neighbors
+#read_data water_pair.xyz
+#replicate 5 5 5
+
+# methods for potential/force calculations
+kspace_style ewald/disp 1.0e-6
+pair_style lj/cut/coul/long 10
+
+#pair_characterization eps sigma cut_1 cut_2
+pair_coeff 2 2 0 0.898 2.7 #H-H sigma = 2*r_min
+pair_coeff 1 2 0 0.4 2.7 #O-H Mixing rules were RMS
+pair_coeff 1 1 0.1521 3.15066 21.219 #O-O  Parameters from Jorgensen, cutoff is 3*sig
+
+bond_style harmonic
+bond_coeff 1 669.13 1.0
+bond_coeff 2 164.00 1.633
+
+#velocity all create 298 3
+
+dump Dump all xyz 10 lammps_traj.xyz
+dump_modify Dump sort id
+dump_modify Dump element  O H
+dump_modify Dump pbc yes
+
+dump Dumplammps all atom 100 dump.lammps
+
+restart 10 water_pair.1.restart water_pair.restart
+
+thermo_style one #print to terminal
+thermo 10
+
+#velocity all create 100 12345 rot yes mom yes dist gaussian
+fix 2 all npt temp 298 298 500 iso 10 10 1000 pchain 3 tchain 3 #random_number atoms_assigned ensemble thermostat start_temp end_temp gradient_step
+Resetting global fix info from restart file:
+  fix style: npt, fix ID: 2
+#fix 3 all rigid/nvt molecule temp 293 293 100
+
+run 20000
+EwaldDisp initialization ...
+  G vector = 0.297213   accuracy = 0.000332064
+All restart file global fix info was re-assigned
+WARNING: Asking for neigh list (../fix_atomify.cpp:63)
+Neighbor list info ...
+  update every 1 steps, delay 10 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 23.219
+  ghost atom cutoff = 23.219
+  binsize = 11.6095, bins = 8 8 8
+  3 neighbor lists, perpetual/occasional/extra = 2 1 0
+  (1) pair lj/cut/coul/long, perpetual
+      attributes: half, newton on
+      pair build: half/bin/newton
+      stencil: half/bin/3d/newton
+      bin: standard
+  (2) pair lj/cut/coul/long, perpetual, copy from (1)
+      attributes: half, newton on
+      pair build: copy
+      stencil: none
+      bin: none
+  (3) fix atomify, occasional, copy from (1)
+      attributes: half, newton on
+      pair build: copy
+      stencil: none
+      bin: none
+  vectors: nbox = 25, nkvec = 32633
+Per MPI rank memory allocation (min/avg/max) = 50.02 | 50.02 | 50.02 Mbytes
+Step Temp E_pair E_mol TotEng Press Volume 
+   34860    298.90037   -32.146157    24.622517    659.80932    4.7459648    675179.69 
+   34870    302.84976   -42.742906    25.821825    659.22938    4.2512816    674701.59 
+   34880    301.32555   -36.502178    22.690085    658.93538    13.724146    674202.36 
+   34890    298.43124   -31.129366    23.215549    658.37175   -1.6019643    673688.86 
+   34900    300.17524   -32.214931     20.06146     658.0258    21.119815    673159.77 
+   34910    298.88164   -34.188344    24.367149    657.46994   -6.3879297     672622.3 
+   34920     298.7891   -31.159357    21.155853    657.08102    24.944126    672068.96 
+   34930    298.29221   -36.077304    26.667731    656.56559   -6.6303057    671510.39 
+   34940    298.44262   -32.228344    22.053706    656.13634    22.513712    670936.58 
+   34950    297.70006   -36.016533     27.13888    655.77546   -1.5716191    670356.73 
+   34960    300.25645   -36.754018    21.677705    655.28426    16.255006    669764.26 
+   34970    298.42023   -34.405623    23.228534    655.08389    7.1965509    669165.36 
+   34980     302.9161     -45.0458    23.360949    654.61373    7.6386395     668561.1 
+   34990    301.14977   -42.920259    25.013904    654.44867    14.024057    667946.16 
+   35000    299.28487   -37.410197     23.17732    653.95852    0.4331767    667322.34 
+   35010    297.44455   -36.065982    25.734251    653.75092    19.436112    666686.95 
+   35020    295.63269   -31.431521    24.597836    653.20377   -4.6043323    666042.36 
+   35030    296.18364   -33.092019    24.700742    652.87623    22.155217     665382.8 
+   35040    299.39953   -40.962461    24.832225    652.31717   -6.2368989    664712.61 
+   35050    298.38226   -38.225929    24.041825     651.9921     19.73274    664023.71 
+   35060    294.96563   -28.175539    21.251674    651.62427  -0.22371294    663322.64 
+   35070    294.55682   -28.238965    21.928138    651.32461     15.71072    662611.26 
+   35080    295.53597   -31.379068    22.685755     651.1282    4.7701114    661890.41 
+   35090    296.93721   -36.640254    24.494975    650.80468    7.6433784    661156.76 
+   35100    297.25545   -38.536538    25.559283    650.68321    12.038588    660408.96 
+   35110      297.632   -37.518419    23.297852    650.28058    1.6878071    659649.21 
+   35120    299.48516   -42.873303    24.399177    650.16444    17.269392     658877.6 
+   35130    303.37408   -49.925345    22.247816    649.64355   -3.5759912    658094.45 
+   35140    302.21422   -48.981012    23.695115    649.44564    19.156134    657294.16 
+   35150    300.46385   -44.328787    22.439769    648.93459   -3.1591159    656481.24 
+   35160    301.65619   -49.173081    24.425283    648.73788    19.133366    655655.79 
+   35170     302.4652   -51.662163    24.682256    648.31199     1.426882    654822.77 
+   35180    298.94345   -45.012041     25.73465    648.15175    18.143286    653983.38 
+   35190    299.09401   -44.144074    24.318288     647.9395    9.4320377    653150.24 
+   35200    303.69893   -55.456049    25.099466    647.68976    9.5097851    652322.16 
+   35210    308.10542    -64.43201    24.044558    647.49694    12.179793    651491.53 
+   35220    312.33308    -74.58972    24.347391    647.08085    0.7990842    650651.85 
+Total wall time: 0:01:58
