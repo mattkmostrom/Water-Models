@@ -29,6 +29,8 @@ fix holditbond2 all restrain bond 1 3 1000 1000 1
 fix holditbond3 all restrain bond 4 5 1000 1000 1
 fix holditbond4 all restrain bond 4 6 1000 1000 1
 
+#fix holdit all shake 0.001 20 0 b 1 a 1
+
 #fix ID group-ID restrain angle atom1 atom2 atom3 Kstart Kstop theta
 fix holditangle1 all restrain angle 2 1 3 1000 1000 109.47
 fix holditangle2 all restrain angle 5 4 6 1000 1000 109.47
@@ -50,3 +52,4 @@ fix 2 all nvt temp 298 298 1000 #iso 10 10 1000 random_number atoms_assigned ens
 #fix 3 all rigid/nvt molecule temp 293 293 100
 
 run 20000
+write_data SPCF_250.init nocoeff

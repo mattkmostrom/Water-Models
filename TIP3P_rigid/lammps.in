@@ -22,6 +22,16 @@ bond_style harmonic
 bond_coeff 1 669.13 1.0
 bond_coeff 2 164.00 1.633
 
+fix holditbond1 all restrain bond 1 2 1000 1000 1
+fix holditbond2 all restrain bond 1 3 1000 1000 1
+fix holditbond3 all restrain bond 4 5 1000 1000 1
+fix holditbond4 all restrain bond 4 6 1000 1000 1
+
+#fix ID group-ID restrain angle atom1 atom2 atom3 Kstart Kstop theta
+fix holditangle1 all restrain angle 2 1 3 1000 1000 109.47
+fix holditangle2 all restrain angle 5 4 6 1000 1000 109.47
+
+
 #velocity all create 298 3
 
 dump Dump all xyz 10 lammps_traj.xyz
