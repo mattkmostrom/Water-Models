@@ -2,7 +2,7 @@
 units real
 boundary p p p #all periodic
 atom_style full #bonds, bends, torsions, etc
-timestep 1.000000 # femtoseconds (1e-15 s)
+timestep 1.00000000 # femtoseconds (1e-15 s)
 
 # the atoms file
 #read_restart water_pair.restart
@@ -20,10 +20,12 @@ pair_coeff 1 2 0 2.4 7.2 #O-H Mixing rules were RMS
 pair_coeff 1 1 0.1591 3.2 9.6 #O-O 
 
 bond_style harmonic
-bond_coeff 1 669.13 1.0
+#bond_coeff * 669.13 1.0
+bond_coeff * 1059.162 0.96
 
 angle_style harmonic
-angle_coeff 1 164 104.5
+angle_coeff * 68.087 104.5
+#angle_coeff * 164 104.5
 
 #velocity all create 298 3
 
@@ -47,4 +49,4 @@ thermo 10
 fix 2 all nvt temp 298 298 1000 #random_number atoms_assigned ensemble thermostat start_temp end_temp gradient_step
 #fix 3 all rigid/nvt molecule temp 293 293 100
 
-run 200000
+run 1000000

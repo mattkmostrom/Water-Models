@@ -21,10 +21,10 @@ pair_coeff 1 1 0.1591 3.2 9.6 #O-O
 
 bond_style harmonic
 #bond_coeff * 669.13 1.0
-bond_coeff * 529.581 0.96
+bond_coeff * 1059.162 0.96
 
 angle_style harmonic
-angle_coeff * 34.0435 104.5
+angle_coeff * 68.087 104.5
 #angle_coeff * 164 104.5
 
 #velocity all create 298 3
