@@ -1,0 +1,6 @@
+# Time-averaged data for fix 1
+# TimeStep Number-of-rows
+# Row c_myChunk[1] c_myChunk[2] c_myChunk[3] c_myChunk[4]
+20000 2
+1 -0.213747 0.0300191 -0.414405 0.467248
+2 0.29351 -0.123558 -0.343999 0.468775

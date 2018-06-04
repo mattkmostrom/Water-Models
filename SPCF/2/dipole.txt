@@ -1,0 +1,2 @@
+# Fix print output for fix get_total_system_dipole
+0.0817797072735358 -0.0951679225331111 -0.759765837244913
