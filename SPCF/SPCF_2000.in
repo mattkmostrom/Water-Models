@@ -5,10 +5,10 @@ atom_style full #bonds, bends, torsions, etc
 timestep 1.000000 # femtoseconds (1e-15 s)
 
 # the atoms file
-read_restart water_pair.restart
-#read_data water_pair.xyz
+#read_restart water_pair.restart
+read_data water_pair.xyz
 #read_data SPCF_250.init
-#replicate 5 5 5
+replicate 10 10 10
 
 # methods for potential/force calculations
 kspace_style ewald/disp 1.0e-6
@@ -54,21 +54,21 @@ compute cc1 all chunk/atom molecule
 compute myChunk all dipole/chunk cc1
 fix 1 all ave/time 1 1 1 c_myChunk[*] file tmp.out mode vector
 
-variable dipole_x atom x*q
-variable dipole_y atom y*q
-variable dipole_z atom z*q
+#variable dipole_x atom x*q
+#variable dipole_y atom y*q
+#variable dipole_z atom z*q
 #systemDipole_x
-compute sD_x all reduce sum v_dipole_x
-compute sD_y all reduce sum v_dipole_y
-compute sD_z all reduce sum v_dipole_z
+#compute sD_x all reduce sum v_dipole_x
+#compute sD_y all reduce sum v_dipole_y
+#compute sD_z all reduce sum v_dipole_z
 
-variable yeetx equal c_sD_x
-variable yeety equal c_sD_y
-variable yeetz equal c_sD_z
+#variable yeetx equal c_sD_x
+#variable yeety equal c_sD_y
+#variable yeetz equal c_sD_z
 
-variable total_system_dipole equal sqrt((c_sD_x*c_sD_x)+(c_sD_y*c_sD_y)+(c_sD_z*c_sD_z))
+#variable total_system_dipole equal sqrt((c_sD_x*c_sD_x)+(c_sD_y*c_sD_y)+(c_sD_z*c_sD_z))
 
-fix get_total_system_dipole all print 1 "${yeetx} ${yeety} ${yeetz}" file "input.txt"
+#fix get_total_system_dipole all print 1 "${yeetx} ${yeety} ${yeetz}" file "input.txt"
 
 thermo_style one #print to terminal
 thermo 10
